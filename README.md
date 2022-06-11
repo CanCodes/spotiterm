@@ -5,7 +5,7 @@ Spotiterm let's you control your spotify player from the terminal (**currently o
 ## Usage
 
 ```
-Usage: spotify [command]
+Usage: spotiterm [command]
 Commands:
         toggle, t:              Toggles the playback state
         play, p:                Plays the current track
