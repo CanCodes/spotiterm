@@ -1,0 +1,40 @@
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+
+    - name: Build for Intel Macs
+      run: env GOOS=darwin GOARCH=amd64 go build -v ./...
+
+    - name: Upload Intel Artifact
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        name: IntelMac
+        path: ./spotiterm
+
+    - name: Build for ARM Macs
+      run: env GOOS=darwin GOARCH=arm64 go build -v ./...
+      
+    - name: Upload ARM Artifact
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        name: ArmMac
+        path: ./spotiterm
+  
+    - name: Test
+      run: go test -v ./...
