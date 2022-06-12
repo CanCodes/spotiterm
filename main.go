@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -11,7 +13,7 @@ import (
 func convertDuration(s int64) string {
 	minutes := s / 60
 	seconds := s % 60
-	str := fmt.Sprintf("%d:%d", minutes, seconds)
+	str := fmt.Sprintf("%02d:%02d", minutes, seconds)
 	return str
 }
 
@@ -34,19 +36,22 @@ Commands:
 
 }
 
-// TODO: add time elapsed and duration data
 // status prints the current status of Spotify, including the current track and the current volume
 func status() {
 	state := execute("-e", "tell application \"Spotify\" to return player state as string")
 	if state == "playing" {
-		track := execute("-e", "tell application \"Spotify\" to return artist of current track & \" - \" & name of current track")
+		track := execute("-e", "tell application \"Spotify\" to return name of current track & \" by \" & artist of current track")
 		volume := execute("-e", "tell application \"Spotify\" to return sound volume as integer")
-		repeatAndShuffle := execute("-e", "tell application \"Spotify\" to return repeating as string & \" - \" & shuffling as string")
-		println("Playing " + track)
-		println("Volume is set to:", volume+"%")
-		println("Repeat and Shuffle is set to:", repeatAndShuffle)
+		repeatAndShuffle := strings.Split(execute("-e", "tell application \"Spotify\" to return repeating as string & \"-\" & shuffling as string"), "-")
+		elapsedSeconds, _ := strconv.ParseInt(execute("-e", "tell application \"Spotify\" to return player position as integer"), 10, 64)
+		durationSeconds, _ := strconv.ParseInt(execute("-e", "tell application \"Spotify\" to return duration of current track as integer"), 10, 64)
+		println("Playing:	" + track)
+		println("Elapsed:	"+convertDuration(elapsedSeconds), "/", convertDuration(durationSeconds/1000))
+		println("Volume:		" + volume + "%")
+		println("Repeat:		" + repeatAndShuffle[0])
+		println("Shuffle:	" + repeatAndShuffle[1])
 	} else {
-		println("Spotify is not playing")
+		println("Spotify is not playing anything.")
 	}
 }
 
@@ -57,6 +62,13 @@ func execute(command ...string) string {
 		panic(err)
 	}
 	return strings.TrimSpace(string(out))
+}
+
+func init() {
+	if runtime.GOOS == "windows" || runtime.GOOS == "linux" {
+		println("This program is currently not supported on Windows or Linux")
+		os.Exit(1)
+	}
 }
 
 func main() {
