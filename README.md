@@ -7,7 +7,7 @@ Spotiterm let's you control your spotify player from the terminal without leavin
 Run the following command in your terminal to install the latest version for your platform:
 
 ```bash
-source <(curl -s https://raw.githubusercontent.com/CanCodes/spotiterm/main/install.sh)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/CanCodes/spotiterm/main/install.sh)"
 ```
 
 Whenever there is a new version, you will be notified in your terminal.
@@ -43,6 +43,4 @@ Spotiterm is licensed under the MIT license.
 
 ## Legal
 
-If you have any legal issues, please contact me at [
-<https://twitter.com/cancodez>
-](https://twitter.com/cancodez).
+If you have any legal issues, please contact me at [<https://twitter.com/cancodez>](https://twitter.com/cancodez).
