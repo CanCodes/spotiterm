@@ -17,6 +17,19 @@ func convertDuration(s int64) string {
 	return str
 }
 
+// convertToURI converts a track or episode URL to a Spotify URI,
+func convertToURI(track string) (string, error) {
+	splitted := strings.Split(track, "spotify.com")
+	if len(splitted) == 1 {
+		if strings.HasPrefix(track, "spotify:") {
+			return track, nil
+		}
+		return "", fmt.Errorf("Invalid URL: %s", track)
+	}
+	uri := "spotify" + strings.ReplaceAll(splitted[1], "/", ":")
+	return strings.Split(uri, "?")[0], nil
+}
+
 // printHelp prints the help text (I am sure there is a better way to do this)
 func printHelp() {
 	println(`Usage: spotify [command]
@@ -87,7 +100,17 @@ func main() {
 		break
 
 	case "play", "p":
-		execute("-e", "tell application \"Spotify\" to play")
+		if len(args) == 1 {
+			execute("-e", "tell application \"Spotify\" to play")
+			status()
+			return
+		}
+		track, err := convertToURI(args[1])
+		if err != nil {
+			println(err.Error())
+			return
+		}
+		execute("-e", "tell application \"Spotify\" to play track \""+track+"\"")
 		status()
 		break
 
@@ -114,10 +137,10 @@ func main() {
 		if len(args) == 1 {
 			out := execute("-e", "tell application \"Spotify\" to return sound volume as integer")
 			println("Volume is set to:", out+"%")
-		} else {
-			execute("-e", "tell application \"Spotify\" to set sound volume to "+args[1])
-			println("Volume set to:", args[1]+"%")
+			return
 		}
+		execute("-e", "tell application \"Spotify\" to set sound volume to "+args[1])
+		println("Volume set to:", args[1]+"%")
 		break
 
 	case "quit", "q":
@@ -128,20 +151,22 @@ func main() {
 		if execute("-e", "tell application \"Spotify\" to return shuffling as boolean") == "true" {
 			execute("-e", "tell application \"Spotify\" to set shuffling to false")
 			println("Shuffle is now off")
-		} else {
-			execute("-e", "tell application \"Spotify\" to set shuffling to true")
-			println("Shuffle is now on")
+			return
 		}
+		execute("-e", "tell application \"Spotify\" to set shuffling to true")
+		println("Shuffle is now on")
+
 		break
 
 	case "repeat", "r":
 		if execute("-e", "tell application \"Spotify\" to return repeating as boolean") == "true" {
 			execute("-e", "tell application \"Spotify\" to set repeating to false")
 			println("Repeat is now off")
-		} else {
-			execute("-e", "tell application \"Spotify\" to set repeating to true")
-			println("Repeat is now on")
+			return
 		}
+		execute("-e", "tell application \"Spotify\" to set repeating to true")
+		println("Repeat is now on")
+
 		break
 
 	default:
