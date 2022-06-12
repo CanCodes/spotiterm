@@ -9,6 +9,9 @@ import (
 	"strings"
 )
 
+var executable, _ = os.Executable()
+var name = strings.Split(executable, "/")[len(strings.Split(executable, "/"))-1] // optimize this
+
 // convertDuration converts a duration in seconds to a readable format (e.g. 1:23)
 func convertDuration(s int64) string {
 	minutes := s / 60
@@ -32,7 +35,7 @@ func convertToURI(track string) (string, error) {
 
 // printHelp prints the help text (I am sure there is a better way to do this)
 func printHelp() {
-	println(`Usage: spotify [command]
+	fmt.Printf(`Usage: %s [command]
 Commands:
 	toggle, t:		Toggles the playback state
 	play, p:		Plays the current track
@@ -45,8 +48,10 @@ Commands:
 	shuffle, sh:		Toggles shuffle
 	repeat, r:		Toggles repeat
 	help, h:		Shows this help
-	`)
 
+Examples:
+	Play a Song From URL: %s play <url> `, name, name)
+	println()
 }
 
 // status prints the current status of Spotify, including the current track and the current volume

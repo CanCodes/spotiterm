@@ -1,13 +1,13 @@
 # Spotiterm
 
-Spotiterm let's you control your spotify player from the terminal (**currently only on macOS**).
+Spotiterm let's you control your spotify player from the terminal without leaving your workplace (**currently only on macOS**).
 
 ## Installation & Updating
 
-Use the following command to install the latest version for your platform:
+Run the following command in your terminal to install the latest version for your platform:
 
 ```bash
-$ source <(curl -s https://raw.githubusercontent.com/CanCodes/spotiterm/main/install.sh)
+source <(curl -s https://raw.githubusercontent.com/CanCodes/spotiterm/main/install.sh)
 ```
 
 Whenever there is a new version, you will be notified in your terminal.
@@ -28,6 +28,9 @@ Commands:
         shuffle, sh:            Toggles shuffle
         repeat, r:              Toggles repeat
         help, h:                Shows this help
+
+Examples:
+        Play a Song From URL: spotiterm play <url>
 ```
 
 ## Contributing
